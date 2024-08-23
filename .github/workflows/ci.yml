@@ -1,0 +1,22 @@
+name: Cypress Health Check Testing
+on:
+  push:
+    branches:
+      - main
+  schedule:
+    - cron: '0 * * * *'
+jobs:
+  tests:
+    runs-on: ubuntu-22.04
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Cypress tests
+        run: |
+          printf '{
+            "BASE_URL_WEB": "%s",
+            "BASE_URL_API": "%s",
+            "SUPER_ADMIN_EMAIL": "%s",
+            "SUPER_ADMIN_PASSWORD": "%s"
+          }' "${{secrets.BASE_URL_WEB}}" "${{secrets.BASE_URL_API}}" "${{secrets.SUPER_ADMIN_EMAIL}}" "${{ secrets.SUPER_ADMIN_PASSWORD }}" > cypress.env.json && npx cypress run
